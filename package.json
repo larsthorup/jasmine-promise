@@ -1,0 +1,19 @@
+{
+    "name": "jasmine-promise",
+    "version": "0.1.1-1",
+    "description": "Testing promises with Jasmine",
+    "author": "Lars Thorup <lars@zealake.com>",
+    "engine": "node 1.1.x",
+    "devDependencies": {
+        "grunt-cli": "0.1.6",
+        "grunt": "0.4.1",
+        "grunt-contrib-clean": "~0.4.0",
+        "grunt-contrib-jshint": "~0.1.1",
+        "grunt-contrib-jasmine": "0.4.1",
+        "grunt-contrib-watch": "~0.2.0",
+        "grunt-template-jasmine-istanbul": "0.2.0"
+    },
+    "scripts": {
+        "test": "grunt ci"
+    }
+}
