@@ -13,6 +13,9 @@ describe('Page', function () {
         page = new window.Page();
         done = new $.Deferred();
     });
+
+    // ToDo: log individual steps as passing
+    // ToDo: improve error message when timed out
     it('loads and navigates correctly', function () {
         runs(function () {
             start(function () {
@@ -31,9 +34,35 @@ describe('Page', function () {
         waitsFor(function () {
             return done.state() !== 'pending';
         });
+        runs(function () {
+            expect(done.state()).toBe('resolved');
+        });
     });
 
-    it('fails to load', function () {
+    it('expected to fail', function () {
+        runs(function () {
+            start(function () {
+                return page.load(/*true*/false);
+            }).then(function (loadResult) {
+                expect(loadResult).toBe('loaded');
+                return page.click(true);
+            }).then(function (clickResult) {
+                expect(clickResult).toBe('clicked');
+            }).done(function () {
+                done.resolve();
+            }).fail(function () {
+                done.reject();
+            });
+        });
+        waitsFor(function () {
+            return done.state() !== 'pending';
+        });
+        runs(function () {
+            expect(done.state()).toBe('resolved');
+        });
+    });
+
+    it('correctly fails to load', function () {
         runs(function () {
             start(function () {
                 return page.load(false);
@@ -46,5 +75,9 @@ describe('Page', function () {
         waitsFor(function () {
             return done.state() !== 'pending';
         });
+        runs(function () {
+            expect(done.state()).toBe('resolved');
+        });
     });
+
 });
