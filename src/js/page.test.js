@@ -8,15 +8,15 @@ var start = function (fn) {
 var itEventually = function (desc, func) {
     'use strict';
     it(desc, function () {
-        var done = new $.Deferred();
+        var eventually = new $.Deferred();
         runs(function () {
-            func(done);
+            func(eventually);
         });
         waitsFor(function () {
-            return done.state() !== 'pending';
-        });
+            return eventually.state() !== 'pending';
+        }, 'it to be eventually resolved or rejected');
         runs(function () {
-            expect(done.state()).toBe('resolved');
+            expect(eventually.state()).toBe('resolved');
         });
     });
 };
@@ -29,8 +29,7 @@ describe('Page', function () {
     });
 
     // ToDo: log individual steps as passing
-    // ToDo: improve error message when timed out
-    itEventually('loads and navigates correctly', function (done) {
+    itEventually('loads and navigates correctly', function (eventually) {
         start(function () {
             return page.load(true);
         }).then(function (loadResult) {
@@ -39,13 +38,24 @@ describe('Page', function () {
         }).then(function (clickResult) {
             expect(clickResult).toBe('clicked');
         }).done(function () {
-            done.resolve();
+            eventually.resolve();
         }).fail(function () {
-            done.reject();
+            eventually.reject();
         });
     });
 
-    itEventually('expected to fail', function (done) {
+    itEventually('cannot load', function (eventually) {
+        start(function () {
+            return page.load(false);
+        }).done(function () {
+            // ToDo: improve this
+            expect('expected it to fail').toBeNull();
+        }).fail(function () {
+            eventually.resolve();
+        });
+    });
+
+    itEventually('fails when promise is being rejected', function (eventually) {
         start(function () {
             return page.load(/*true*/false);
         }).then(function (loadResult) {
@@ -54,20 +64,19 @@ describe('Page', function () {
         }).then(function (clickResult) {
             expect(clickResult).toBe('clicked');
         }).done(function () {
-            done.resolve();
+            eventually.resolve();
         }).fail(function () {
-            done.reject();
+            eventually.reject();
         });
     });
 
-    itEventually('correctly fails to load', function (done) {
+    itEventually('fails when promise stays pending', function (eventually) {
         start(function () {
-            return page.load(false);
+            return page.forever();
         }).done(function () {
-            expect('expected it to fail').toBeNull();
+            eventually.resolve();
         }).fail(function () {
-            done.resolve();
+            eventually.reject();
         });
     });
-
 });

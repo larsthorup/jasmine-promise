@@ -26,6 +26,10 @@
         }, 300);
         return def.promise();
     };
+    Page.prototype.forever = function () {
+        var def = $.Deferred();
+        return def.promise();
+    };
 
     window.Page = Page;
 })(window);
