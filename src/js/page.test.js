@@ -24,4 +24,17 @@ describe('Page', function () {
             return done.state() !== 'pending';
         });
     });
+
+    it('fails to load', function () {
+        runs(function () {
+            page.load(false).done(function () {
+                expect('expected it to fail').toBeNull();
+            }).fail(function () {
+                done.resolve();
+            });
+        });
+        waitsFor(function () {
+            return done.state() !== 'pending';
+        });
+    });
 });

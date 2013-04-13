@@ -6,20 +6,24 @@
     };
     Page.prototype.load = function (mustSucceed) {
         var def = $.Deferred();
-        if (mustSucceed) {
-            window.setTimeout(function () {
+        window.setTimeout(function () {
+            if (mustSucceed) {
                 def.resolve('loaded');
-            }, 600);
-        }
+            } else {
+                def.reject();
+            }
+        }, 600);
         return def.promise();
     };
     Page.prototype.click = function (mustSucceed) {
         var def = $.Deferred();
-        if (mustSucceed) {
-            window.setTimeout(function () {
+        window.setTimeout(function () {
+            if (mustSucceed) {
                 def.resolve('clicked');
-            }, 300);
-        }
+            } else {
+                def.reject();
+            }
+        }, 300);
         return def.promise();
     };
 
