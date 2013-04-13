@@ -23,6 +23,43 @@ var itEventually = function (desc, func) {
 
 describe('Page', function () {
     'use strict';
+    describe('outer', function () {
+        var page;
+        var eventually;
+        describe('before', function () {
+            page = new window.Page();
+        });
+        it('when loading the page', function () { // ToDo: describe
+            eventually = page.load(true);
+        });
+        describe('waiting', function () {
+            waitsFor(function () {
+                return eventually.state() !== 'pending';
+            });
+        });
+        it('should be loaded', function () {
+            eventually.done(function (loadResult) {
+                expect(loadResult).toBe('loaded');
+            });
+        });
+        it('when clicking the link', function () {  // ToDo: describe
+            eventually = page.click(true);
+        });
+        describe('waiting', function () {
+            waitsFor(function () {
+                return eventually.state() !== 'pending';
+            });
+        });
+        it('should be clicked', function () {
+            eventually.done(function (clickResult) {
+                expect(clickResult).toBe('clicked');
+            });
+        });
+    });
+});
+
+describe('Page phase 1', function () {
+    'use strict';
     var page;
     beforeEach(function () {
         page = new window.Page();
@@ -48,8 +85,7 @@ describe('Page', function () {
         start(function () {
             return page.load(false);
         }).done(function () {
-            // ToDo: improve this
-            expect('expected it to fail').toBeNull();
+            eventually.reject();
         }).fail(function () {
             eventually.resolve();
         });
