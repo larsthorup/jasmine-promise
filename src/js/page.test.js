@@ -1,4 +1,10 @@
 /*global describe it expect window $ beforeEach runs waitsFor*/
+
+var start = function (fn) {
+    'use strict';
+    return fn();
+};
+
 describe('Page', function () {
     'use strict';
     var page;
@@ -9,7 +15,9 @@ describe('Page', function () {
     });
     it('loads and navigates correctly', function () {
         runs(function () {
-            page.load(true).then(function (loadResult) {
+            start(function () {
+                return page.load(true);
+            }).then(function (loadResult) {
                 expect(loadResult).toBe('loaded');
                 return page.click(true);
             }).then(function (clickResult) {
@@ -27,7 +35,9 @@ describe('Page', function () {
 
     it('fails to load', function () {
         runs(function () {
-            page.load(false).done(function () {
+            start(function () {
+                return page.load(false);
+            }).done(function () {
                 expect('expected it to fail').toBeNull();
             }).fail(function () {
                 done.resolve();
